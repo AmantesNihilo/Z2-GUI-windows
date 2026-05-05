@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# PyInstaller
+build/
+dist/
+*.log
+
+# Z2 GUI runtime files
+utils/tg-ws-proxy.log
+utils/tg-ws-proxy-build-smoke.log
+utils/test-results/
+utils/ui-screens/
+utils/gui-settings.json
+utils/gui-results.json
+utils/current_preset.txt
+utils/preset-active.txt
+
+# Local/editor noise
+.idea/
+.vscode/
+*.tmp
+*.bak
