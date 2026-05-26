@@ -104,7 +104,7 @@ def sleep_interruptible(seconds: int, should_stop) -> bool:
 
 def target_passed(target_result: tester.TargetResult) -> bool:
     if target_result.http_tokens:
-        return any(re.search(r":(?:OK|HTTP)\d{3}$", token) for token in target_result.http_tokens)
+        return any(re.search(r":OK[23]\d{2}$", token) for token in target_result.http_tokens)
     return target_result.ping_ok
 
 
@@ -116,17 +116,14 @@ def service_adjusted_score(result: tester.PresetTestResult) -> int:
     passed = partial = failed = primary_failed = 0
     for service_details in groups.values():
         primary_details = [detail for detail in service_details if detail.primary]
-        if primary_details:
-            if all(target_passed(detail) for detail in primary_details):
-                passed += 1
-            else:
-                failed += 1
-                primary_failed += sum(1 for detail in primary_details if not target_passed(detail))
-            continue
-
         passed_count = sum(1 for detail in service_details if target_passed(detail))
+        primary_failed_count = sum(1 for detail in primary_details if not target_passed(detail))
+
         if passed_count == len(service_details) and service_details:
             passed += 1
+        elif primary_failed_count:
+            failed += 1
+            primary_failed += primary_failed_count
         elif passed_count:
             partial += 1
         else:

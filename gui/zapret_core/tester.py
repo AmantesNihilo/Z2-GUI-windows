@@ -268,7 +268,7 @@ def test_targets(
                 )
 
             for token in target_result.http_tokens:
-                if re.search(r":(?:OK|HTTP)\d{3}$", token):
+                if re.search(r":OK[23]\d{2}$", token):
                     ok += 1
                 elif token.endswith(":UNSUP"):
                     unsup += 1

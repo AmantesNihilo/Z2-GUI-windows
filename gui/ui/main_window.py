@@ -152,7 +152,7 @@ THEME_OPTIONS = [("Windows 11", "win11"), ("Dark", "dark"), ("AMOLED", "amoled")
 
 LANGUAGE_OPTIONS = [("English", "en"), ("\u0420\u0443\u0441\u0441\u043a\u0438\u0439", "ru")]
 
-APP_VERSION = "1.5.0"
+APP_VERSION = "1.5.0_hotfix"
 
 PROJECT_RELEASES_URL = "https://github.com/AmantesNihilo/Z2-GUI-windows/releases"
 
@@ -4315,7 +4315,7 @@ class MainWindow(MSFluentWindow):
 
                     text = str(token)
 
-                    if re.search(r":(?:OK|HTTP)\d{3}$", text):
+                    if re.search(r":OK[23]\d{2}$", text):
 
                         ok += 1
 
@@ -6951,23 +6951,15 @@ class MainWindow(MSFluentWindow):
 
         primary_details = [detail for detail in details if self.detail_is_primary(detail)]
 
-        if primary_details:
-
-            primary_passed = sum(1 for detail in primary_details if self.detail_passed(detail))
-
-            if primary_passed == len(primary_details):
-
-                return "passed"
-
-            return "failed"
-
-
-
         passed = sum(1 for detail in details if self.detail_passed(detail))
 
         if passed == len(details) and details:
 
             return "passed"
+
+        if primary_details and any(not self.detail_passed(detail) for detail in primary_details):
+
+            return "failed"
 
         if passed:
 
@@ -6989,7 +6981,7 @@ class MainWindow(MSFluentWindow):
 
         if isinstance(tokens, list) and tokens:
 
-            return any(re.search(r":(?:OK|HTTP)\d{3}$", str(token)) for token in tokens)
+            return any(re.search(r":OK[23]\d{2}$", str(token)) for token in tokens)
 
         return bool(detail.get("ping_ok"))
 
@@ -7032,6 +7024,12 @@ class MainWindow(MSFluentWindow):
         if "UNSUP" in token_text:
 
             return "Protocol unsupported by curl/system TLS"
+
+        http_error = re.search(r":HTTP([45]\d{2})", token_text)
+
+        if http_error:
+
+            return f"HTTP {http_error.group(1)} response"
 
         if detail.get("ping_target") and not detail.get("ping_ok"):
 

@@ -98,6 +98,6 @@ RiotGames               = "https://www.riotgames.com"
 RiotAuth                = "https://auth.riotgames.com"
 Valorant                = "https://playvalorant.com"
 
-### Games / Discord Voice
+### Social / Discord
 GameDiscordGateway      = "https://gateway.discord.gg"
 GameDiscordVoice        = "https://discord.media"
